@@ -23,7 +23,18 @@ struct WeatherView: View {
                 .font(.largeTitle)
                 .padding()
             Text(viewModel.weatherDescription)
-        }.onAppear(perform: viewModel.refresh)
+        }
+        .alert(isPresented: $viewModel.shouldShowLocationError) {
+            Alert(
+                    title: Text("Error"),
+                    message: Text("To see the weather, provide location access in Settings."),
+                    dismissButton: .default(Text("Open Settings")) {
+                      guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+                      UIApplication.shared.open(settingsURL)
+                    }
+                  )
+        }
+        .onAppear(perform: viewModel.refresh)
     }
 }
 
